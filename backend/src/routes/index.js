@@ -1,5 +1,7 @@
 const routes = [
-    require('./taskRoutes')
+    require('./taskRoutes'),
+    require('./tagsRoutes')
+
 ]
 
 module.exports = { routes }
