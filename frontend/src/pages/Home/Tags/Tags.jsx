@@ -1,96 +1,100 @@
 import { FaPlus } from "react-icons/fa";
 import "./Tags.css";
-import { useCallback, useState } from "react";
-import PropTypes from "prop-types";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-export default function Tags({ tags, setTags }) {
+import { useCallback, useEffect, useState } from "react";
+import InputText from "../../../components/InputText/InputText";
+import Button from "../../../components/Button/Button"
+import Table from "../../../components/Table/Table";
+import { api } from "../../../services/api";
+
+export default function Tags() {
+  const [tags, setTags] = useState([])
   const [newTag, setNewTag] = useState("");
+  const [isLoading, setIsLoading] = useState(true)
+  
+  const fetchTags = useCallback(async() => {
+    try {
+      const { data } = await api.get("/tags");
+      setTags({
+        headers: [{ label: "Tag", column: "label" }],
+        rows: data,
+      })
+      setIsLoading(false)
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchTags()
+  }, [])
 
   const handleDeleteRow = useCallback(
     async (id) => {
-      if (!tags.rows.length) {
-        return;
-      }
-      setTags((prev) => ({
-        ...prev,
-        rows: prev.rows.filter((tag) => tag.id !== id),
-      }));
+      await api.delete(`/tags/${id}`).then(response => {
+        setTags((prev) => ({
+          ...prev,
+          rows: prev.rows.filter((tag) => tag.id !== id),
+        }));
+      }).catch(err => alert("Erro ao deletar tag"))
     },
-    [tags.rows.length, setTags]
+    [tags, setTags]
   );
 
-  const handleTagSubmit = (event) => {
+  const handleTagSubmit = async (event) => {
     event.preventDefault();
     if (!newTag) {
+      alert("Digite um nome para a tag");
       return;
     }
-    setTags((prev) => ({
-      ...prev,
-      rows: [...prev.rows, { id: prev.rows.length + 1, tag: newTag }],
-    }));
+
+    await api.post("/tags", { label: newTag })
+    .then(response => {
+      setTags((prev) => 
+        ({
+        ...prev,
+        rows: 
+          [
+            ...prev.rows, 
+            { 
+              id: response.data.id, 
+              label: response.data.label 
+            }
+          ],
+      }))
+    })
+    .catch(err => alert("Erro ao adicionar tag"))
+    setNewTag("")
   };
 
   const handleChange = (event) => {
     setNewTag(event.target.value);
   };
 
-  const { headers, rows } = tags;
+  if(isLoading) {
+    return <h1>Loading...</h1>
+  }
 
   return (
     <div className="tags-wrapper">
       <h1>Tags</h1>
       <div className="form-wrapper">
         <form onSubmit={(event) => handleTagSubmit(event)}>
-          <input
-            type="text"
-            placeholder="Enter tag name"
+          <InputText 
             required
+            type="text"
+            value={newTag}
             onChange={handleChange}
+            placeholder="Insert tag name"
           />
-          <button type="submit">
+
+          <Button type="submit" onClick={handleTagSubmit}> 
             <FaPlus /> Add Tag
-          </button>
+          </Button>
+        
         </form>
       </div>
-      <table>
-      <thead>
-        <tr>
-          {headers.map((header, index) => (
-            <th key={index}>
-              {header.label}
-            </th>
-          ))}
-          {rows.length !== 0 && <th ></th>}
-        </tr>
-      </thead>
-      <tbody>
-        {rows.length === 0 ? (
-          <tr>
-            <td colSpan={headers.length}></td>
-          </tr>
-        ) : (
-          rows.map((row) => (
-            <tr key={row.id}>
-              {headers.map((header, colIndex) => (
-                <td key={colIndex} style={{border: "1px solid black"}}>
-                  {row[header.column]}
-                </td>
-              ))}
-              <td style={{width: "1rem", border: "1px solid black"}}>
-                <button onClick={() => handleDeleteRow(row.id)}>
-                  <MdOutlineDeleteOutline />
-                </button>
-              </td>
-            </tr>
-          ))
-        )}
-      </tbody>
-    </table>
+
+      <Table data={tags} handleDeleteRow={handleDeleteRow} />
     </div>
   );
 }
-
-Tags.propTypes = {
-  tags: PropTypes.object.isRequired,
-  setTags: PropTypes.func.isRequired,
-};

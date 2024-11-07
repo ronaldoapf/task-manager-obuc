@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import "./Table.css";
-import { MdOutlineDeleteOutline } from "react-icons/md";
+import { MdOutlineDeleteOutline, MdOutlineModeEditOutline } from "react-icons/md";
 
 export default function Table({ data, handleDeleteRow }) {
   const { headers, rows } = data;

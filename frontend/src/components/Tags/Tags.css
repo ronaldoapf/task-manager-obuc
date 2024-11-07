@@ -1,0 +1,12 @@
+.tags-container {
+  padding: 6px 10px;
+  border-radius: 6px;
+  width: fit-content;
+  background-color: #E1F6FF;
+}
+
+.label {
+  color: #2C62B4;
+  font-weight: 700;
+  font-size: 0.75rem;
+}

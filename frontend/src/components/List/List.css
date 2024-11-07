@@ -1,0 +1,21 @@
+.list-container  {
+	height: 44rem;
+	padding: 1.5rem;
+	border-radius: 8px;
+	min-width: 22.625rem; 
+	background-color: #EEF2F5;
+}
+
+.title {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.list-tasks {
+	overflow-y: auto;
+	max-height: 41rem;
+}
+
+.list-tasks > *:not(:last-child) {
+	margin-bottom: 1rem;
+}

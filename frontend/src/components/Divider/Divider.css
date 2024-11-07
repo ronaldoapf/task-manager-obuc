@@ -1,0 +1,21 @@
+hr {
+  width: 100%;
+  border: none;
+  margin: 0.875rem 0;
+}
+
+.normal {
+  border-top: 1px solid #E3E3E3;
+}
+
+.to-do {
+  border-top: 3px solid #00569E;
+}
+
+.in-progress {
+  border: 2px solid #FFA500;
+}
+
+.done {
+  border-top: 3px solid #40A737;
+}

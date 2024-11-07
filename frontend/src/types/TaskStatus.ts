@@ -1,0 +1,1 @@
+export const TaskStatus = ['normal', 'pending', 'inProgress', 'completed']

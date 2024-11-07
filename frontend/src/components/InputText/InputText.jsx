@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 import "./InputText.css";
+
 export default function InputText({
   label,
   placeholder,
   textarea,
   required,
+  value,
   onChange = () => {},
 }) {
   return (
@@ -25,6 +27,7 @@ export default function InputText({
           <label htmlFor="input-text">{label}</label>
           <input
             onChange={onChange}
+            value={value}
             type="text"
             id="input-text"
             name="input-text"
@@ -43,4 +46,5 @@ InputText.propTypes = {
   textarea: PropTypes.bool,
   required: PropTypes.bool,
   onChange: PropTypes.func,
+  value: PropTypes.string,
 };
